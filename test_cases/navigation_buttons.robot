@@ -65,15 +65,15 @@ Assert login page
     Capture Page Screenshot        logout_passed.png
 
 Detect language of page
-    ${main_button_text}=  Get Text    ${MAINPAGEBUTTON}
-    Set Global Variable     ${MAINPAGETEXT}    ${main_button_text}
-    Log To Console                 Anna, MAINPAGETEXT: "${MAINPAGETEXT}"
+    ${main_button_text}=           Get Text    ${MAINPAGEBUTTON}
+    Set Global Variable            ${MAINPAGETEXT}    ${main_button_text}
+    Log To Console                 DETECTED MAINPAGETEXT: "${MAINPAGETEXT}"
 
 Click on the language button
     Click Element                  ${LANGUAGEBUTTON}
 Assert language changed
-    ${main_button_text}=  Get Text    ${MAINPAGEBUTTON}
-    Set Global Variable     ${CHANGEDTEXT}  ${main_button_text}
-    Should Not Be Equal   ${MAINPAGETEXT}    ${CHANGEDTEXT}
-    Log To Console    "MAINPAGETEXT: ${MAINPAGETEXT}"
-    Log To Console    "CHANGEDTEXT: ${CHANGEDTEXT}"
+    ${main_button_text}=           Get Text    ${MAINPAGEBUTTON}
+    Set Global Variable            ${CHANGEDTEXT}  ${main_button_text}
+    Should Not Be Equal            ${MAINPAGETEXT}    ${CHANGEDTEXT}
+    Log To Console                 "MAINPAGETEXT: ${MAINPAGETEXT}"
+    Log To Console                 "CHANGEDTEXT: ${CHANGEDTEXT}"
