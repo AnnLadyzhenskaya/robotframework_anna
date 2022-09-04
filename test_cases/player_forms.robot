@@ -1,5 +1,6 @@
 *** Settings ***
 Library                 SeleniumLibrary
+Library                 Collections
 
 Documentation           Suite description #automated tests for scout website
 
@@ -16,9 +17,12 @@ ${PLAYERSURNAMEFIELD}   xpath=//input[@name='surname']
 ${PLAYERAGEFIELD}       xpath=//input[@name='age']
 ${PLAYERPOSITIONFIELD}  xpath=//input[@name='mainPosition']
 ${SUBMITPLAYERBTN}      xpath=//button[@type='submit']
+${CLEARFIELDSBTN}       xpath=//button[@type='submit']/following-sibling::button
 ${PLAYERHEADER}         xpath=//form/div[contains(@class, 'MuiCardHeader-root')]
 ${TESTPLAYERNAME}       TEST ROBOT NAME
 ${TESTPLAYERSURNAME}    TEST ROBOT SURNAME
+${TESTPLAYERAGE}        18.03.1998
+${TESTPLAYERPOSITION}   Test Robot Position
 
 *** Test Cases ***
 Add player success
@@ -51,6 +55,22 @@ Add player without required data
     Assert Stay At Add Page
     [Teardown]    Close Browser
 
+Clear player form fields
+    [Tags]    Positive
+    Open Login Page
+    Type In Email
+    Type In Password
+    Click On The Submit Button
+    Assert Dashboard
+    Click Add Player Link
+    Type In Name
+    Type In Surname
+    Type In Age
+    Type In Position
+    Click Clear Fields Button
+    Assert Fields Are Empty
+    [Teardown]    Close Browser
+
 *** Keywords ***
 Open login page
     Open Browser                   ${LOGIN URL}    ${BROWSER}
@@ -74,11 +94,13 @@ Type in name
 Type in surname
     Input Text                     ${PLAYERSURNAMEFIELD}    ${TESTPLAYERSURNAME}
 Type in age
-    Input Text                     ${PLAYERAGEFIELD}   18.03.1998
+    Input Text                     ${PLAYERAGEFIELD}   ${TESTPLAYERAGE}
 Type in position
-    Input Text                     ${PLAYERPOSITIONFIELD}   Test Robot Position
+    Input Text                     ${PLAYERPOSITIONFIELD}   ${TESTPLAYERPOSITION}
 Click submit player button
     Click Element                  ${SUBMITPLAYERBTN}
+Click clear fields button
+    Click Element                  ${CLEARFIELDSBTN}
 
 
 Assert stay at add page
@@ -89,3 +111,14 @@ Assert edit page
     Wait Until Element Contains    ${PLAYERHEADER}  Edit player
     Title Should Be                Edit player ${TESTPLAYERNAME} ${TESTPLAYERSURNAME}
     Capture Page Screenshot        edit_page_with_new_player.png
+
+Assert fields are empty
+    @{inputs}=                     Get Webelements        xpath=//form//input
+
+    FOR    ${input}  IN  @{inputs}
+        ${value}=   Get Element Attribute     ${input}  value
+        Should Be Empty      ${value}
+    END
+
+    Capture Page Screenshot        fields_are_empty.png
+
